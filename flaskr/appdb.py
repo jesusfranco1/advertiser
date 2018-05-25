@@ -271,7 +271,7 @@ def input_comment():
     query = "INSERT INTO rating(email, rating, comment, bid) VALUES ('{}', '{}', '{}', '{}')".format(commenter,rate,comment,the_bid[0][0])
     cursor.execute(query)
     conn.commit()
-    return 'ok'
+    return flask.redirect(flask.url_for('users'))
 
 def list_all_businessess_no_geo():
     cursor.execute("SELECT housenum, street, city, state FROM business")
