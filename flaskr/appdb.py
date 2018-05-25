@@ -134,7 +134,6 @@ def getUserIdFromEmail(email):
     cursor.execute("SELECT uid FROM User WHERE email = '{0}'".format(email))
     return cursor.fetchone()[0]
 
-
 def isEmailUnique(email):
     # use this to check if a email has already been registered
     cursor = conn.cursor()
@@ -237,7 +236,6 @@ def list_all_businesses():
         for j in i:
             all_things = all_things + " " + j
             ' '.join(all_things.split())
-        print(all_things)
         g = geocoder.google(all_things)
         localall = g.latlng
         lst.append(localall)
@@ -263,15 +261,47 @@ def input_comment():
     comment = request.form.get('comment')
     rate = request.form.get('rate')
     words = place.split()
-    print(words)
     cursor.execute("SELECT bid FROM business WHERE housenum = '{}' and state = '{}'".format(words[0],words[-1]));
     the_bid = cursor.fetchall()
-    print(the_bid) 
-    print(comment)
     query = "INSERT INTO rating(email, rating, comment, bid) VALUES ('{}', '{}', '{}', '{}')".format(commenter,rate,comment,the_bid[0][0])
     cursor.execute(query)
     conn.commit()
     return flask.redirect(flask.url_for('users'))
+
+def print_businesses_and_their_comments():
+    cursor.execute("SELECT bid, housenum, street, city, state FROM business")
+    all_locations = cursor.fetchall()
+    lst = []
+    for i in all_locations:
+        all_things = ""
+        for j in i: 
+            all_things = all_things + " " + str(j)
+            ' '.join(all_things.split())
+        lst.append(all_things)
+    cursor.execute("SELECT email, comment, rating, bid FROM rating")
+    all_comments = cursor.fetchall()
+    lst2 = []
+    for i in all_comments:
+        all_stuff = ""
+        for j in i: 
+            all_stuff = all_stuff + " " + str(j)
+            ' '.join(all_stuff.split())
+        lst2.append(all_stuff)
+    print("$$$$$$$$$$$$")
+    print(lst2[-1][-1])
+    print("$$$$$$$$$$$$")
+    print(lst[0][1])
+    print("###########")
+    new_lst = []
+    for i in range(len(lst)):
+        stuff = ""
+        if lst2[i][-1] == lst[i][1]:
+            stuff = stuff + str(lst[i]) + str(lst2[i])
+        new_lst.append(stuff)
+    print("------")
+    print(stuff)
+    print("------")
+    return stuff
 
 def list_all_businessess_no_geo():
     cursor.execute("SELECT housenum, street, city, state FROM business")
@@ -287,7 +317,7 @@ def list_all_businessess_no_geo():
 
 @app.route('/')
 def users():
-    return render_template('hello.html', name = getName(request.args.get('email')), inputs = show_inputs(request.args.get('email')) ,loc = get_locaions(request.args.get('email')),local = geocode_user_location(), msg = show_business_message(), all = list_all_businesses(), messg = list_all_messages(), nogeo = list_all_businessess_no_geo())
+    return render_template('hello.html', name = getName(request.args.get('email')), inputs = show_inputs(request.args.get('email')) ,loc = get_locaions(request.args.get('email')),local = geocode_user_location(), msg = show_business_message(), all = list_all_businesses(), messg = list_all_messages(), nogeo = list_all_businessess_no_geo(), test = print_businesses_and_their_comments())
 
 if __name__ == '__main__':
     app.run(debug=True)
