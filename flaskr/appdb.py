@@ -267,6 +267,10 @@ def input_comment():
     cursor.execute("SELECT bid FROM business WHERE housenum = '{}' and state = '{}'".format(words[0],words[-1]));
     the_bid = cursor.fetchall()
     print(the_bid) 
+    print(comment)
+    query = "INSERT INTO rating(email, rating, comment, bid) VALUES ('{}', '{}', '{}', '{}')".format(commenter,rate,comment,the_bid[0][0])
+    cursor.execute(query)
+    conn.commit()
     return 'ok'
 
 def list_all_businessess_no_geo():
