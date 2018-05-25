@@ -269,7 +269,7 @@ def input_comment():
     return flask.redirect(flask.url_for('users'))
 
 def print_businesses_and_their_comments():
-    cursor.execute("SELECT bid, housenum, street, city, state FROM business")
+    cursor.execute("SELECT bid, message FROM business")
     all_locations = cursor.fetchall()
     lst = []
     for i in all_locations:
@@ -287,21 +287,13 @@ def print_businesses_and_their_comments():
             all_stuff = all_stuff + " " + str(j)
             ' '.join(all_stuff.split())
         lst2.append(all_stuff)
-    print("$$$$$$$$$$$$")
-    print(lst2[-1][-1])
-    print("$$$$$$$$$$$$")
-    print(lst[0][1])
-    print("###########")
     new_lst = []
     for i in range(len(lst)):
         stuff = ""
         if lst2[i][-1] == lst[i][1]:
-            stuff = stuff + str(lst[i]) + str(lst2[i])
+            stuff = stuff + str(lst[i][2:]) + ": " + str(lst2[i][:-1])
         new_lst.append(stuff)
-    print("------")
-    print(stuff)
-    print("------")
-    return stuff
+    return new_lst
 
 def list_all_businessess_no_geo():
     cursor.execute("SELECT housenum, street, city, state FROM business")
