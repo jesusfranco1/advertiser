@@ -255,9 +255,35 @@ def list_all_messages():
         lst.append(all_words)
     return lst
 
+@app.route('/inputComments', methods=['GET', 'POST'])
+@flask_login.login_required
+def input_comment():
+    commenter = flask_login.current_user.id
+    place = request.form.get('optionselect')
+    comment = request.form.get('comment')
+    rate = request.form.get('rate')
+    words = place.split()
+    print(words)
+    cursor.execute("SELECT bid FROM business WHERE housenum = '{}' and state = '{}'".format(words[0],words[-1]));
+    the_bid = cursor.fetchall()
+    print(the_bid) 
+    return 'ok'
+
+def list_all_businessess_no_geo():
+    cursor.execute("SELECT housenum, street, city, state FROM business")
+    all_locations = cursor.fetchall()
+    lst = []
+    for i in all_locations:
+        all_things = ""
+        for j in i:
+            all_things = all_things + " " + j
+            ' '.join(all_things.split())
+        lst.append(all_things)
+    return lst
+
 @app.route('/')
 def users():
-    return render_template('hello.html', name = getName(request.args.get('email')), inputs = show_inputs(request.args.get('email')) ,loc = get_locaions(request.args.get('email')),local = geocode_user_location(), msg = show_business_message(), all = list_all_businesses(), messg = list_all_messages())
+    return render_template('hello.html', name = getName(request.args.get('email')), inputs = show_inputs(request.args.get('email')) ,loc = get_locaions(request.args.get('email')),local = geocode_user_location(), msg = show_business_message(), all = list_all_businesses(), messg = list_all_messages(), nogeo = list_all_businessess_no_geo())
 
 if __name__ == '__main__':
     app.run(debug=True)

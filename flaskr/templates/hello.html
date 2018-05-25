@@ -73,7 +73,41 @@
             <a href="/delete/{{input[0]}}">Delete<a>
           {%endfor%}
         {%endif%}
-        <h3>Location</h3>
+        <div class="listbusinesses">
+          <h2>Businesses in your area</h2>
+          <p id="ad"></p>
+          <div class="comments">
+            <form action="/inputComments" method="POST">
+              <select name="optionselect">
+                {% for element in nogeo %}
+                <option value= "{{element}}">{{element}}</option>
+                {% endfor %}
+              </select> 
+              <input type="textbox" name="comment" value="add comment" maxlength="50">
+              <input type="number" name="rate" min=" 1" max="5">
+              <button type="submit" class="btn submit">Comment</button>
+            </form>
+          </div>
+          <script>
+            var locations = {{nogeo|safe}}
+            var person = {
+              business: function(thing) {
+                return thing
+
+              }
+            }
+            var x = "" 
+            for (var i = 0; i < locations.length; i++) {
+               x += "<li>"
+               x += person.business(locations[i]);
+               x += "</li>"
+               x += "<br>"
+               x += "<br>"
+            }
+           // x = person.business(locations[1], "5", "5");
+            document.getElementById("ad").innerHTML = x;
+          </script>
+        </div>
       </div>
     </div>
   </div>
@@ -81,7 +115,6 @@
   <div class="centered">
     <div id="mapid" style="width: 600px; height: 700px;"></div>
       <script>
-
         var mymap = L.map('mapid').setView({{local}}, 13);
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
