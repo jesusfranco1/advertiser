@@ -271,6 +271,8 @@ def input_comment():
 def print_businesses_and_their_comments():
     cursor.execute("SELECT bid, message FROM business")
     all_locations = cursor.fetchall()
+    print("all_locations")
+    print(all_locations)
     lst = []
     for i in all_locations:
         all_things = ""
@@ -287,13 +289,55 @@ def print_businesses_and_their_comments():
             all_stuff = all_stuff + " " + str(j)
             ' '.join(all_stuff.split())
         lst2.append(all_stuff)
+    # new_lst = []
+    # print(lst)
+    # print(lst2)
+    # for i in range(len(lst)):
+    #     stuff = ""
+    #     print(lst2[i][-1],lst[i][1])
+    #     if lst2[i][-1] == lst[i][1]:
+    #         stuff = stuff + str(lst[i][2:]) + ": " + str(lst2[i][:-1])
+    #     new_lst.append(stuff)
+    # print("the new_lst")
+    # print(new_lst)
+    # return new_lst
     new_lst = []
-    for i in range(len(lst)):
+    print(lst2)
+    for i in range(len(lst2)):
         stuff = ""
-        if lst2[i][-1] == lst[i][1]:
-            stuff = stuff + str(lst[i][2:]) + ": " + str(lst2[i][:-1])
-        new_lst.append(stuff)
-    return new_lst
+        for j in range(len(lst)):
+            print(lst[j][1],lst2[i][-1])
+            if lst[j][1] == lst2[i][-1]:
+                print("they match")
+                print(lst[j][-1],lst2[j][1])
+                stuff = stuff + str(lst2[i][1:-1]) + ": " + str(lst[j][2:])
+            new_lst.append(stuff)
+    print("the new new_lst")
+    print(new_lst)
+    print("**********************************")
+    x = [x for x in new_lst if x]
+    better_x = only_show_necessary(x, all_locations)
+    print(better_x)
+    return better_x
+
+'''
+    The goal of the function below is to hopefully avoid spam accounts and just show the essentials.
+'''
+def only_show_necessary(comment_lists, all_locations):
+    improved_list = []
+    for i in range(len(all_locations)):
+        index_word = all_locations[i][1]
+        print(index_word)
+        for j in range(len(comment_lists)):
+            print((index_word in comment_lists[j]))
+            if (index_word not in comment_lists[j]) and comment_lists[i] not in improved_list:
+                improved_list.append(comment_lists[j])
+            
+    # for i in range(len(comment_lists)):
+    #     print(all_locations[0][1])
+    #     if comment_lists[i] not in improved_list:
+    #         improved_list.append(comment_lists[i])
+    return improved_list
 
 def list_all_businessess_no_geo():
     cursor.execute("SELECT housenum, street, city, state FROM business")
