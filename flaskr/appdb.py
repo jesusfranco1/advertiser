@@ -51,9 +51,6 @@ def request_loader(request):
     pwd = str(data[0][0])
     user.is_authenticated = request.form['password'] == pwd
     return user    
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.get(user_id)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -289,18 +286,6 @@ def print_businesses_and_their_comments():
             all_stuff = all_stuff + " " + str(j)
             ' '.join(all_stuff.split())
         lst2.append(all_stuff)
-    # new_lst = []
-    # print(lst)
-    # print(lst2)
-    # for i in range(len(lst)):
-    #     stuff = ""
-    #     print(lst2[i][-1],lst[i][1])
-    #     if lst2[i][-1] == lst[i][1]:
-    #         stuff = stuff + str(lst[i][2:]) + ": " + str(lst2[i][:-1])
-    #     new_lst.append(stuff)
-    # print("the new_lst")
-    # print(new_lst)
-    # return new_lst
     new_lst = []
     print(lst2)
     for i in range(len(lst2)):
@@ -318,7 +303,48 @@ def print_businesses_and_their_comments():
     x = [x for x in new_lst if x]
     better_x = only_show_necessary(x, all_locations)
     print(better_x)
+    average_rating()
     return better_x
+
+'''
+    This function takes each business and averages its rating so that users can get the best result.
+    If there are no ratings the function should return 10 for now since we only go up to 5 and 10 can
+    be intereted later on in the front end.
+'''
+def average_rating():
+    cursor.execute("SELECT bid FROM business")
+    locations = cursor.fetchall()
+    cursor.execute("SELECT B.message, B.bid, R.rating FROM business B JOIN rating R ON R.bid = B.bid") 
+    rates = cursor.fetchall()
+    print(rates)
+    ratings = {} #initializer a dictionary t make organizing easier later on
+    for i in range(len(locations)):
+        if locations[i] not in ratings:
+            ratings[locations[i][0]] = None
+    print("this is the dictionary")
+    print(ratings)
+    print("the dictionary has ended... continuing on with next thing to do")
+    list_of_averages = []
+    for key in ratings:
+        summation = 0
+        average = 0
+        quantity = 0
+        for j in range(len(rates)):
+            if rates[j][1] == key:
+                print("<matchkey>")
+                print((key, rates[j][-1]))
+                print("</matchkey")
+                summation = summation + rates[j][-1]
+                quantity = quantity + 1
+        if summation == 0:
+            summation = 1000 #just a really big number so I dont confuse in the future
+        if quantity == 0:
+            quantity = 10000
+        average = summation / quantity
+        print(average)
+        list_of_averages.append((key,average))
+        print(list_of_averages)
+    return list_of_averages
 
 '''
     The goal of the function below is to hopefully avoid spam accounts and just show the essentials.
