@@ -342,9 +342,20 @@ def average_rating():
             quantity = 10000
         average = summation / quantity
         print(average)
-        list_of_averages.append((key,average))
+        list_of_averages.append((key,average)) #I am going to return a tuple for now. If I need a single element I can just fix it later on.
         print(list_of_averages)
     return list_of_averages
+
+'''
+    my cleaning fucntion that I mentioned in the above function
+'''
+def clean_rates():
+    average_tuples = average_rating()
+    new_tuple = []
+    for i in average_tuples:
+        new_tuple.append(i[-1])
+    print(new_tuple)
+    return new_tuple
 
 '''
     The goal of the function below is to hopefully avoid spam accounts and just show the essentials.
@@ -379,7 +390,7 @@ def list_all_businessess_no_geo():
 
 @app.route('/')
 def users():
-    return render_template('hello.html', name = getName(request.args.get('email')), inputs = show_inputs(request.args.get('email')) ,loc = get_locaions(request.args.get('email')),local = geocode_user_location(), msg = show_business_message(), all = list_all_businesses(), messg = list_all_messages(), nogeo = list_all_businessess_no_geo(), test = print_businesses_and_their_comments())
+    return render_template('hello.html', name = getName(request.args.get('email')), inputs = show_inputs(request.args.get('email')) ,loc = get_locaions(request.args.get('email')),local = geocode_user_location(), msg = show_business_message(), all = list_all_businesses(), messg = list_all_messages(), nogeo = list_all_businessess_no_geo(), test = print_businesses_and_their_comments(), rare = clean_rates())
 
 if __name__ == '__main__':
     app.run(debug=True)

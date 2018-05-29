@@ -127,9 +127,11 @@
 
         var locations = {{all|safe}}
         var messages = {{messg|safe}}
+        var rates = {{rare|safe}}
+
         for (var i = 0 ; i < locations.length; i++)
         {
-          L.marker(locations[i]).addTo(mymap).bindPopup(messages[i]).openPopup();
+          L.marker(locations[i]).addTo(mymap).bindPopup(messages[i] + " : " + rates[i]).openPopup();
         }
 
         L.circle([51.508, -0.11], 500, {
